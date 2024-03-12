@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include "consoleGUI/colors.h"
+#include "consoleGUI/GUI.h"
 extern int width;
 extern int height;
 extern int speed;

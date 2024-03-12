@@ -34,7 +34,6 @@ void setupMAP()
 		setcur(i + mapPositionX, height - 1 + mapPositionY);
 		cout<<MAP[height - 1][i];
 	}
-	setColorForeground(White);
 	setColorBackground(backgroundColor);
 	for (int i = 1; i < height-1; i++)
 	{
@@ -63,13 +62,13 @@ void deleteMAP()
 
 void clearWithoutColor()
 {
+	MAP.resize(height);
+    for (int i = 0; i < height; i++)MAP[i].resize(width);
 	for (int i = 1; i < height - 1; i++)
 	{
 		for (int j = 1; j < width - 1; j++)
 		{
 			MAP[i][j] = ' ';
-			setcur(j + mapPositionX, i + mapPositionY);
-			cout << ' ';
 		}
 	}
 	while (!coordStart.empty())coordStart.pop_back();
@@ -94,76 +93,6 @@ void clear()
 	setColorBackground(Black);
 }
 
-//bool isInside(int x, int y, int rows, int cols) {
-//	return x >= 0 && x < rows && y >= 0 && y < cols;
-//}
-//
-//vector<pair<int, int>> findPath(vector<vector<char>>& maze, pair<int, int> start, pair<int, int> finish) {
-//	int rows = maze.size();
-//	int cols = maze[0].size();
-//
-//	// Массивы для хранения посещенных ячеек и пути
-//	vector<vector<bool>> visited(rows, vector<bool>(cols, false));
-//	vector<vector<pair<int, int>>> parent(rows, vector<pair<int, int>>(cols, { -1, -1 }));
-//
-//	// Стек для хранения координат пути
-//	stack<pair<int, int>> pathStack;
-//
-//	// Очередь для BFS
-//	queue<pair<int, int>> q;
-//
-//	/*for (int i = 0; i < start.size(); ++i)
-//	{
-//		q.push(start[i]);
-//		visited[start[i].first][start[i].second] = true;
-//	}*/
-//	// Начальная точка
-//	q.push(start);
-//	visited[start.first][start.second] = true;
-//
-//	// Возможные смещения для перемещения в соседние ячейки (вверх, вниз, влево, вправо)
-//	int dx[] = { -1, 1, 0, 0 };
-//	int dy[] = { 0, 0, -1, 1 };
-//
-//	while (!q.empty()) {
-//		pair<int, int> current = q.front();
-//		q.pop();
-//
-//		if (current == finish) {
-//			// Найден путь до финиша, восстановим путь
-//			vector<pair<int, int>> path;
-//			pair<int, int> p = finish;
-//			while (p != make_pair(-1, -1)) {
-//				pathStack.push(p);
-//				p = parent[p.first][p.second];
-//			}
-//
-//			// Переносим координаты пути из стека в вектор в правильном порядке
-//			while (!pathStack.empty()) {
-//				path.push_back(pathStack.top());
-//				pathStack.pop();
-//			}
-//
-//			return path;
-//		}
-//
-//		// Перебираем соседние ячейки
-//		for (int i = 0; i < 4; ++i) {
-//			int nx = current.first + dx[i];
-//			int ny = current.second + dy[i];
-//
-//			if (isInside(nx, ny, rows, cols) && maze[nx][ny] != (char)219 && maze[nx][ny] != (char)176 && maze[nx][ny] != (char)177
-//				&& maze[nx][ny] != (char)178 && maze[nx][ny] != (char)220 && maze[nx][ny] != (char)223 && !visited[nx][ny]) {
-//				q.push(make_pair(nx, ny));
-//				visited[nx][ny] = true;
-//				parent[nx][ny] = current;
-//			}
-//		}
-//	}
-//
-//	// Если путь до финиша не найден, вернем пустой путь
-//	return vector<pair<int, int>>();
-//}
 
 vector<pair<int,int>> bfs(vector<vector<char>>& a, vector<pair<int, int>>& start, vector< pair<int, int>>& finish)
 {
@@ -227,7 +156,7 @@ vector<pair<int,int>> bfs(vector<vector<char>>& a, vector<pair<int, int>>& start
 
 void walkingThePath()
 {
-	setColorForeground(White);
+	setColorForeground(wallColor);
 	setColorBackground(backgroundColor);
 	pair<int, int> prev;
 	if(!path.empty()) prev = path[path.size() - 1];
@@ -236,15 +165,20 @@ void walkingThePath()
 		for (int i = path.size() - 2; i >= 0; i--)
 		{
 			setcur(path[i].second + mapPositionX, path[i].first + mapPositionY);
-			cout << char(2);
+			if (path[i].second + mapPositionX >= mapPositionX && path[i].first + mapPositionY >= mapPositionY)cout << char(2);
 			setcur(prev.second + mapPositionX, prev.first + mapPositionY);
-			cout << ' ';
+			if(prev.second + mapPositionX >= mapPositionX && prev.first + mapPositionY >= mapPositionY)cout << ' ';
 			if (abs(path[i].first - prev.first) == 1)
 			{
 				Sleep(100 - speed);
 				setcur(prev.second + mapPositionX, prev.first + mapPositionY);
-				cout << char(250);
-				MAP[prev.first][prev.second] = char(250);
+				{
+					if (prev.second + mapPositionX >= mapPositionX && prev.first + mapPositionY >= mapPositionY)
+					{
+						cout << char(250);
+						MAP[prev.first][prev.second] = char(250);
+					}
+				}
 			}
 			else
 			{
@@ -252,8 +186,13 @@ void walkingThePath()
 				if ((prev.second - mapPositionX) % 2 == 0)
 				{
 					setcur(prev.second + mapPositionX, prev.first + mapPositionY);
-					cout << char(250);
-					MAP[prev.first][prev.second] = char(250);
+					{
+						if (prev.second + mapPositionX >= mapPositionX && prev.first + mapPositionY >= mapPositionY)
+						{
+							cout << char(250);
+							MAP[prev.first][prev.second] = char(250);
+						}
+					}
 				}
 			}
 			prev = path[i];
@@ -264,9 +203,9 @@ void walkingThePath()
 		for (int i = path.size() - 2; i >= 0; i--)
 		{
 			setcur(path[i].second + mapPositionX, path[i].first + mapPositionY);
-			cout << char(2);
+			if (path[i].second + mapPositionX >= mapPositionX && path[i].first + mapPositionY >= mapPositionY)cout << char(2);
 			setcur(prev.second + mapPositionX, prev.first + mapPositionY);
-			cout << ' ';
+			if (prev.second + mapPositionX >= mapPositionX && prev.first + mapPositionY >= mapPositionY)cout << ' ';
 			if (abs(path[i].first - prev.first) == 1)
 			{
 				Sleep(100 - speed);
@@ -287,6 +226,8 @@ void game()
 	system("cls");
 	bool stopGame = false;
 	Window menu(31, 26, 85, 2), menuWalls(31, 8, 85, 15);
+	menu.setTexture(char(220), char(220), char(223), char(223), char(220), char(223), char(219), char(219));
+	menuWalls.setTexture(char(220), char(220), char(223), char(223), char(220), char(223), char(219), char(219));
 	menu.show();
 	menuWalls.show();
 	setcur(85, 15); cout << char(219);
@@ -303,7 +244,7 @@ void game()
 	sbClear.connect(clear);
 	sbStart.connect([&]()
 	{
-			setColorForeground(White);
+			setColorForeground(wallColor);
 			setColorBackground(backgroundColor);
 			coordStart = {};
 			coordFinish = {};
@@ -341,7 +282,7 @@ void game()
 	switchButtonLeaveMark.connect([&]() { LeaveMark = false; }, [&]() { LeaveMark = true; });
 	vector<vector<char>> arrX = { {'X'} };
 	CustomButton back(arrX, arrX, 116, 1);
-	back.setButtonForegroundColor(BrightRed);
+	back.setForegroundColor(BrightRed);
 	back.connect([&]() {stopGame = true; });
 	char tempWall = ' ';
 
@@ -392,7 +333,6 @@ void game()
 			}
 			else
 			{
-				setColorForeground(White);
 				if ((mousePos.X - mapPositionX) % 2 == 0)
 				{
 					setcur(mousePos.X, mousePos.Y); std::cout << ' ';

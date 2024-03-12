@@ -17,6 +17,13 @@ void Button::changePosition(int positionX, int positionY)
 {
 }
 
+void Button::setBackgroundColor(ConsoleColor newColor)
+{
+}
+
+void Button::setForegroundColor(ConsoleColor newColor)
+{
+}
 
 SliderButton::SliderButton(int minValue, int maxValue, std::string sliderName, int sliderValue, int sliderPositionX, int sliderPositionY, Orientation orientation)
 	: minValue(minValue), maxValue(maxValue),
@@ -207,6 +214,16 @@ void SliderButton::changePosition(int positionX, int positionY)
 	this->sliderPositionY = positionY;
 }
 
+void SliderButton::setBackgroundColor(ConsoleColor newColor)
+{
+	this->backgroundColor = newColor;
+}
+
+void SliderButton::setForegroundColor(ConsoleColor newColor)
+{
+	this->foregroundColor = newColor;
+}
+
 void SliderButton::handleMouseEvent(COORD mousePos) {
 	if (orientation == Orientation::HORIZONTAL) {
 		if (mousePos.X >= sliderPositionX && mousePos.X < sliderPositionX + sliderWidth &&
@@ -325,18 +342,18 @@ void StandartButton::buttonFill()
 	}
 	for (int i = 0; i < buttonHeight; i++)
 	{
-		arr[i][0] = '|';
-		arr[i][buttonWidth - 1] = '|';
+		arr[i][0] = verticalLine;
+		arr[i][buttonWidth - 1] = verticalLine;
 	}
 	for (int j = 0; j < buttonWidth; j++)
 	{
-		arr[0][j] = '-';
-		arr[buttonHeight - 1][j] = '-';
+		arr[0][j] = horizontalLine;
+		arr[buttonHeight - 1][j] = horizontalLine;
 	}
-	arr[0][0] = static_cast<char>(197);
-	arr[buttonHeight - 1][0] = static_cast<char>(197);
-	arr[0][buttonWidth - 1] = static_cast<char>(197);
-	arr[buttonHeight - 1][buttonWidth - 1] = static_cast<char>(197);
+	arr[0][0] = topLeftCorner;
+	arr[buttonHeight - 1][0] = bottomLeftCorner;
+	arr[0][buttonWidth - 1] = topRightCorner;
+	arr[buttonHeight - 1][buttonWidth - 1] = bottomRightCorner;
 	int x = (buttonWidth - static_cast<int>(buttonName.size())) / 2;
 	int y = (buttonHeight - 1) / 2;
 	for (int i = 0; i < static_cast<int>(buttonName.size()); i++)
@@ -351,18 +368,18 @@ void StandartButton::buttonDefault()
 	isPressed = false;
 	for (int i = 0; i < buttonHeight; i++)
 	{
-		arr[i][0] = '|';
-		arr[i][buttonWidth - 1] = '|';
+		arr[i][0] = verticalLine;
+		arr[i][buttonWidth - 1] = verticalLine;
 	}
 	for (int j = 0; j < buttonWidth; j++)
 	{
-		arr[0][j] = '-';
-		arr[buttonHeight - 1][j] = '-';
+		arr[0][j] = horizontalLine;
+		arr[buttonHeight - 1][j] = horizontalLine;
 	}
-	arr[0][0] = static_cast<char>(197);
-	arr[buttonHeight - 1][0] = static_cast<char>(197);
-	arr[0][buttonWidth - 1] = static_cast<char>(197);
-	arr[buttonHeight - 1][buttonWidth - 1] = static_cast<char>(197);
+	arr[0][0] = topLeftCorner;
+	arr[buttonHeight - 1][0] = bottomLeftCorner;
+	arr[0][buttonWidth - 1] = topRightCorner;
+	arr[buttonHeight - 1][buttonWidth - 1] = bottomRightCorner;
 }
 
 void StandartButton::buttonPressed()
@@ -382,6 +399,23 @@ void StandartButton::buttonPressed()
 
 void StandartButton::show()
 {
+	saveConsoleAttributes();
+	setColorForeground(foregroundColor);
+
+	/*for (int j = 0; j < buttonWidth; j++)
+	{
+		setcur(buttonPositionX + j, buttonPositionY);
+		std::cout << arr[0][j];
+	}
+
+	for (int j = 0; j < buttonWidth; j++)
+	{
+		setcur(buttonPositionX + j, buttonPositionY + buttonHeight - 1);
+		std::cout << arr[buttonHeight - 1][j];
+	}*/
+
+	setColorBackground(backgroundColor);
+
 	for (int i = 0; i < buttonHeight; i++)
 	{
 		for (int j = 0; j < buttonWidth; j++)
@@ -390,12 +424,35 @@ void StandartButton::show()
 			std::cout << arr[i][j];
 		}
 	}
+	restoreConsoleAttributes();
+
 }
 
 void StandartButton::changePosition(int positionX, int positionY)
 {
 	this->buttonPositionX = positionX;
 	this->buttonPositionY = positionY;
+}
+
+void StandartButton::setBackgroundColor(ConsoleColor newColor)
+{
+	this->backgroundColor = newColor;
+}
+
+void StandartButton::setForegroundColor(ConsoleColor newColor)
+{
+	this->foregroundColor = newColor;
+}
+
+void StandartButton::setTexture(char topLeft, char topRight, char bottomLeft, char bottomRight, char horizontal, char vertical) {
+	topLeftCorner = topLeft;
+	topRightCorner = topRight;
+	bottomLeftCorner = bottomLeft;
+	bottomRightCorner = bottomRight;
+	horizontalLine = horizontal;
+	verticalLine = vertical;
+	buttonFill();
+	show();
 }
 
 void StandartButton::handleMouseEvent(COORD mousePos)
@@ -442,20 +499,20 @@ void SwitchButton::buttonFill()
 
 	for (std::size_t i = 0; i < arr.size(); i++)
 	{
-		arr[i][0] = '|';
-		arr[i][switchWidth - 1] = '|';
+		arr[i][0] = verticalLine;
+		arr[i][switchWidth - 1] = verticalLine;
 	}
 
 	for (int j = 0; j < switchWidth; j++)
 	{
-		arr[0][j] = '-';
-		arr[switchHeight - 1][j] = '-';
+		arr[0][j] = horizontalLine;
+		arr[switchHeight - 1][j] = horizontalLine;
 	}
 
-	arr[0][0] = static_cast<char>(197);
-	arr[switchHeight - 1][0] = static_cast<char>(197);
-	arr[0][switchWidth - 1] = static_cast<char>(197);
-	arr[switchHeight - 1][switchWidth - 1] = static_cast<char>(197);
+	arr[0][0] = topLeftCorner;
+	arr[switchHeight - 1][0] = bottomLeftCorner;
+	arr[0][switchWidth - 1] = topRightCorner;
+	arr[switchHeight - 1][switchWidth - 1] = bottomRightCorner;
 
 	if (!stateSwitch)
 	{
@@ -486,22 +543,22 @@ void SwitchButton::buttonDefault()
 	isPressed = false;
 	setcur(switchPositionX - 1, switchPositionY - 1); // устранение артефактов
 	std::cout << ' ';
-	for (int i = 0; i < switchHeight; i++)
+	for (std::size_t i = 0; i < arr.size(); i++)
 	{
-		arr[i][0] = '|';
-		arr[i][switchWidth - 1] = '|';
+		arr[i][0] = verticalLine;
+		arr[i][switchWidth - 1] = verticalLine;
 	}
 
 	for (int j = 0; j < switchWidth; j++)
 	{
-		arr[0][j] = '-';
-		arr[switchHeight - 1][j] = '-';
+		arr[0][j] = horizontalLine;
+		arr[switchHeight - 1][j] = horizontalLine;
 	}
 
-	arr[0][0] = static_cast<char>(197);
-	arr[switchHeight - 1][0] = static_cast<char>(197);
-	arr[0][switchWidth - 1] = static_cast<char>(197);
-	arr[switchHeight - 1][switchWidth - 1] = static_cast<char>(197);
+	arr[0][0] = topLeftCorner;
+	arr[switchHeight - 1][0] = bottomLeftCorner;
+	arr[0][switchWidth - 1] = topRightCorner;
+	arr[switchHeight - 1][switchWidth - 1] = bottomRightCorner;
 }
 
 void SwitchButton::buttonPressed()
@@ -605,6 +662,27 @@ void SwitchButton::addName(std::string name, int namePositionX, int namePosition
 	this->switchName = name;
 	this->switchNamePositionX = namePositionX;
 	this->switchNamePositionY = namePositionY;
+}
+
+void SwitchButton::setBackgroundColor(ConsoleColor newColor)
+{
+	this->backgroundColor = newColor;
+}
+
+void SwitchButton::setForegroundColor(ConsoleColor newColor)
+{
+	this->foregroundColor = newColor;
+}
+
+void SwitchButton::setTexture(char topLeft, char topRight, char bottomLeft, char bottomRight, char horizontal, char vertical) {
+	topLeftCorner = topLeft;
+	topRightCorner = topRight;
+	bottomLeftCorner = bottomLeft;
+	bottomRightCorner = bottomRight;
+	horizontalLine = horizontal;
+	verticalLine = vertical;
+	buttonFill();
+	show();
 }
 
 void SwitchButton::handleMouseEvent(COORD mousePos)
@@ -765,6 +843,16 @@ void ScrollButton::addName(std::string name, int namePositionX, int namePosition
 	this->scrollNamePositionY = namePositionY;
 }
 
+void ScrollButton::setBackgroundColor(ConsoleColor newColor)
+{
+	this->backgroundColor = newColor;
+}
+
+void ScrollButton::setForegroundColor(ConsoleColor newColor)
+{
+	this->foregroundColor = newColor;
+}
+
 void ScrollButton::handleMouseEvent(COORD mousePos)
 {
 	if (mousePos.X >= scrollPositionX && mousePos.X < scrollPositionX + scrollWidth &&
@@ -790,14 +878,14 @@ void ScrollButton::handleMouseEvent(COORD mousePos)
 			}
 			else
 			{
-				if (mousePos.X == scrollPositionX + scrollHeight / 2 && mousePos.Y == scrollPositionY) {
+				if (mousePos.X == scrollPositionX + scrollWidth / 2 && mousePos.Y == scrollPositionY) {
 					int temp = slideNumber;
 					if (temp > 0)temp -= 1;
 					else if (temp == 0)temp = content.size() - 1;
 					nextSlide(temp);
 					if (userFunction1 != nullptr)userFunction1();
 				}
-				else if (mousePos.X == scrollPositionX + scrollHeight / 2 && mousePos.Y == scrollPositionY + scrollHeight - 1) {
+				else if (mousePos.X == scrollPositionX + scrollWidth/ 2 && mousePos.Y == scrollPositionY + scrollHeight - 1) {
 					int temp = slideNumber;
 					if (temp < content.size() - 1)temp += 1;
 					else if (temp == content.size() - 1)temp = 0;
@@ -857,8 +945,8 @@ void CustomButton::buttonPressed()
 void CustomButton::show()
 {
 
-	setColorBackground(buttonBackgroundColor);
-	setColorForeground(buttonForegroundColor);
+	setColorBackground(backgroundColor);
+	setColorForeground(foregroundColor);
 	if (isPressed)
 	{
 		for (int i = 0; i < texturePressed.size(); i++)
@@ -915,12 +1003,12 @@ void CustomButton::handleKeyboardEvent(int key)
 	}
 }
 
-void CustomButton::setButtonBackgroundColor(ConsoleColor backgroundColor)
+void CustomButton::setBackgroundColor(ConsoleColor newColor)
 {
-	this->buttonBackgroundColor = backgroundColor;
+	this->backgroundColor = newColor;
 }
 
-void CustomButton::setButtonForegroundColor(ConsoleColor foregroundColor)
+void CustomButton::setForegroundColor(ConsoleColor newColor)
 {
-	this->buttonForegroundColor = foregroundColor;
+	this->foregroundColor = newColor;
 }

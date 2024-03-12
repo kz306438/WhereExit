@@ -9,7 +9,6 @@
 #include "cursor.h"
 #include "Object.h"
 namespace {
-	// ќбъ€вл€ем переменные как статические, чтобы они были видны только внутри данного файла
 	static HANDLE hin = GetStdHandle(STD_INPUT_HANDLE);
 	static INPUT_RECORD InputRecord;
 	static DWORD Events;
@@ -30,6 +29,8 @@ protected:
 	virtual void buttonDefault() = 0;
 	virtual void buttonPressed() = 0;
 	virtual void changePosition(int positionX, int positionY) = 0;
+	virtual void setBackgroundColor(ConsoleColor newColor) = 0;
+	virtual void setForegroundColor(ConsoleColor newColor) = 0;
 	virtual ~Button() {}
 	template<typename... Args>
 	friend void keyboardButtonInteraction(Args*... buttons);
@@ -60,6 +61,10 @@ public:
 	friend void mouseButtonInteraction(Args*... buttons);
 
 	void changePosition(int positionX, int positionY) override;
+
+	void setBackgroundColor(ConsoleColor newColor) override;
+
+	void setForegroundColor(ConsoleColor newColor) override;
 private:
 	std::vector<std::vector<char>> arr;
 	int sliderWidth;
@@ -70,6 +75,8 @@ private:
 	int sliderValue;
 	int sliderPositionX;
 	int sliderPositionY;
+	ConsoleColor backgroundColor = Black;
+	ConsoleColor foregroundColor = White;
 	int temp;
 	Orientation orientation;
 	std::function<void()> userFunction1;
@@ -100,13 +107,27 @@ public:
 
 	void changePosition(int positionX, int positionY) override;
 
+	void setBackgroundColor(ConsoleColor newColor) override;
+
+	void setForegroundColor(ConsoleColor newColor) override;
+
+	void setTexture(char topLeft, char topRight, char bottomLeft, char bottomRight, char horizontal, char vertical);
+
 private:
 	std::vector<std::vector<char>> arr;
 	int buttonHeight;
 	int buttonWidth;
 	int buttonPositionX;
 	int buttonPositionY;
+	ConsoleColor backgroundColor = Black;
+	ConsoleColor foregroundColor = White;
 	std::string buttonName;
+	char topLeftCorner = char(201);
+	char topRightCorner = char(187);
+	char bottomLeftCorner = char(200);
+	char bottomRightCorner = char(188);
+	char horizontalLine = char(205);
+	char verticalLine = char(186);
 	std::function<void()> userFunction;
 	void buttonDefault() override;
 	void buttonPressed() override;
@@ -136,6 +157,12 @@ public:
 
 	void changePosition(int positionX, int positionY) override;
 
+	void setBackgroundColor(ConsoleColor newColor) override;
+
+	void setForegroundColor(ConsoleColor newColor) override;
+
+	void setTexture(char topLeft, char topRight, char bottomLeft, char bottomRight, char horizontal, char vertical);
+
 private:
 	std::vector<std::vector<char>> arr;
 	int switchWidth;
@@ -147,6 +174,14 @@ private:
 	int switchPositionX;
 	int switchPositionY;
 	std::string state;
+	ConsoleColor backgroundColor = Black;
+	ConsoleColor foregroundColor = White;
+	char topLeftCorner = char(201);
+	char topRightCorner = char(187);
+	char bottomLeftCorner = char(200);
+	char bottomRightCorner = char(188);
+	char horizontalLine = char(205);
+	char verticalLine = char(186);
 	std::function<void()> userFunction1;
 	std::function<void()> userFunction2;
 	void setValue(bool value);
@@ -190,6 +225,10 @@ public:
 
 	int getSlideNumber();
 
+	void setBackgroundColor(ConsoleColor newColor) override;
+
+	void setForegroundColor(ConsoleColor newColor) override;
+
 private:
 	std::vector<std::vector<std::vector<char>>> content;
 	std::vector<std::vector<char>> arr;
@@ -202,6 +241,8 @@ private:
 	int  scrollPositionY;
 	Orientation orientation;
 	int slideNumber = 0;
+	ConsoleColor backgroundColor = Black;
+	ConsoleColor foregroundColor = White;
 	std::function<void()> userFunction1;
 	std::function<void()> userFunction2;
 	void buttonFill() override;
@@ -228,9 +269,9 @@ public:
 	template<typename... Args>
 	friend void mouseButtonInteraction(Args*... buttons);
 
-	void setButtonBackgroundColor(ConsoleColor backgroundColor);
+	void setBackgroundColor(ConsoleColor newColor) override;
 
-	void setButtonForegroundColor(ConsoleColor foregroundColor);
+	void setForegroundColor(ConsoleColor newColor) override;
 
 	void changePosition(int positionX, int positionY) override;
 
@@ -246,8 +287,8 @@ private:
 	void show() override;
 	virtual void handleMouseEvent(COORD mousePos);
 	virtual void handleKeyboardEvent(int key);
-	ConsoleColor buttonBackgroundColor = Black;
-	ConsoleColor buttonForegroundColor = White;
+	ConsoleColor backgroundColor = Black;
+	ConsoleColor foregroundColor = White;
 };
 
 //функци€ дл€ управлени€ кнопками с помощью клавиатуры

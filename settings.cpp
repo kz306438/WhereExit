@@ -1,152 +1,61 @@
 #include "settings.h"
+#include "setupButtons.h"
 #include <iostream>
 void settings()
 {
 	system("cls");
 	bool stopSettings = false;
 	bool isChange = false;
-	SliderButton sliderButtonWidth(10, 40, "width", width/2, 45, 3, SliderButton::Orientation::HORIZONTAL);
-	SliderButton sliderButtonHeight(10, 30, "height", height, 50, 7, SliderButton::Orientation::HORIZONTAL);
-	StandartButton sbBack(20, 5, "Back", 5, 3);
+	Window custom(41, 24, 41, 3);
+	custom.addWindowName("custom", 5, 0);
+	custom.show();
+	SliderButton sliderButtonWidth(10, 40, "WIDTH", width/2, 45, 6, SliderButton::Orientation::HORIZONTAL);
+	SliderButton sliderButtonHeight(10, 30, "HEIGHT", height, 50, 10, SliderButton::Orientation::HORIZONTAL);
+	StandartButton sbBack(20, 5, "BACK", 8, 3);
 	sliderButtonWidth.connect([&]() {width -= 2; isChange = true; }, [&]() {width += 2; isChange = true; });
 	sliderButtonHeight.connect([&]() {height -= 1; isChange = true; }, [&]() {height += 1; isChange = true; });
 	sbBack.connect([&]() {stopSettings = true; });
-	std::vector<std::vector<std::vector<char>>> content =
-	{
+	wallsColor.addName("WALL COLOR:", 56, 16);
+	wallsColor.connect([&]()
 		{
-			{' ','w','h','i','t','e',' '}
-		},
-		{
-			{' ','b','l','u','e',' ',' '}
-		},
-		{
-			{' ','g','r','e','e','n',' '}
-		},
-		{
-			{' ','c','y','a','n',' ',' '}
-		},
-		{
-			{' ',' ','r','e','d',' ',' '}
-		},
-		{
-			{'m','a','g','e','n','t','a'}
-		},
-		{
-			{'y','e','l','l','o','w',' '}
-		}
-	};
-	ScrollButton wallsColor(content, 56, 15, ScrollButton::Orientation::HORIZONTAL);
-	wallsColor.addName("wall color:", 56, 13);
-	wallsColor.connect([&]() 
-		{
-			switch (wallsColor.getSlideNumber())
-			{
-			case 0:
-				wallColor = White;
-				break;
-			case 1:
-				wallColor = BrightBlue;
-				break;
-			case 2:
-				wallColor = Green;
-				break;
-			case 3:
-				wallColor = Cyan;
-				break;
-			case 4:
-				wallColor = BrightRed;
-				break;
-			case 5:
-				wallColor = Magenta;
-				break;
-			case 6:
-				wallColor = Yellow;
-				break;
-
-			}
-		}, [&]() 
-		{
-			switch (wallsColor.getSlideNumber())
-			{
-			case 0:
-				wallColor = White;
-				break;
-			case 1:
-				wallColor = BrightBlue;
-				break;
-			case 2:
-				wallColor = Green;
-				break;
-			case 3:
-				wallColor = Cyan;
-				break;
-			case 4:
-				wallColor = BrightRed;
-				break;
-			case 5:
-				wallColor = Magenta;
-				break;
-			case 6:
-				wallColor = Yellow;
-				break;
-
-			}
-		});
-	ScrollButton mapColor(content, 56, 20, ScrollButton::Orientation::HORIZONTAL);
-	mapColor.addName("background color:", 53, 18);
-	mapColor.connect([&]()
-		{
-			switch (mapColor.getSlideNumber())
-			{
-			case 0:
-				backgroundColor = White;
-				break;
-			case 1:
-				backgroundColor = BrightBlue;
-				break;
-			case 2:
-				backgroundColor = Green;
-				break;
-			case 3:
-				backgroundColor = Cyan;
-				break;
-			case 4:
-				backgroundColor = BrightRed;
-				break;
-			case 5:
-				backgroundColor = Magenta;
-				break;
-			case 6:
-				backgroundColor = Yellow;
-				break;
-			}
+			if (wallsColor.getSlideNumber() == 0)wallColor = White;
+			if (wallsColor.getSlideNumber() == 1)wallColor = Blue;
+			if (wallsColor.getSlideNumber() == 2)wallColor = Green;
+			if (wallsColor.getSlideNumber() == 3)wallColor = Cyan;
+			if (wallsColor.getSlideNumber() == 4)wallColor = Red;
+			if (wallsColor.getSlideNumber() == 5)wallColor = Magenta;
+			if (wallsColor.getSlideNumber() == 6)wallColor = Yellow;
 		},
 		[&]()
 		{
-			switch (mapColor.getSlideNumber())
-			{
-			case 0:
-				backgroundColor = White;
-				break;
-			case 1:
-				backgroundColor = BrightBlue;
-				break;
-			case 2:
-				backgroundColor = Green;
-				break;
-			case 3:
-				backgroundColor = Cyan;
-				break;
-			case 4:
-				backgroundColor = BrightRed;
-				break;
-			case 5:
-				backgroundColor = Magenta;
-				break;
-			case 6:
-				backgroundColor = Yellow;
-				break;
-			}
+			if (wallsColor.getSlideNumber() == 0)wallColor = White;
+			if (wallsColor.getSlideNumber() == 1)wallColor = Blue;
+			if (wallsColor.getSlideNumber() == 2)wallColor = Green;
+			if (wallsColor.getSlideNumber() == 3)wallColor = Cyan;
+			if (wallsColor.getSlideNumber() == 4)wallColor = Red;
+			if (wallsColor.getSlideNumber() == 5)wallColor = Magenta;
+			if (wallsColor.getSlideNumber() == 6)wallColor = Yellow;
+		});
+	mapColor.addName("BACKGROUND COLOR:", 53, 21);
+	mapColor.connect([&]()
+		{
+			if (mapColor.getSlideNumber() == 0)backgroundColor = White;
+			if (mapColor.getSlideNumber() == 1)backgroundColor = Blue;
+			if (mapColor.getSlideNumber() == 2)backgroundColor = Green;
+			if (mapColor.getSlideNumber() == 3)backgroundColor = Cyan;
+			if (mapColor.getSlideNumber() == 4)backgroundColor = Red;
+			if (mapColor.getSlideNumber() == 5)backgroundColor = Magenta;
+			if (mapColor.getSlideNumber() == 6)backgroundColor = Yellow;
+		},
+		[&]()
+		{
+			if (mapColor.getSlideNumber() == 0)backgroundColor = White;
+			if (mapColor.getSlideNumber() == 1)backgroundColor = Blue;
+			if (mapColor.getSlideNumber() == 2)backgroundColor = Green;
+			if (mapColor.getSlideNumber() == 3)backgroundColor = Cyan;
+			if (mapColor.getSlideNumber() == 4)backgroundColor = Red;
+			if (mapColor.getSlideNumber() == 5)backgroundColor = Magenta;
+			if (mapColor.getSlideNumber() == 6)backgroundColor = Yellow;
 		});
 	setupInputHandling();
 	while (!stopSettings)
